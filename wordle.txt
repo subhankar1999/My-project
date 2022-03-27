@@ -1,0 +1,339 @@
+#include<iostream>
+#include<vector>
+#include<map>
+#include<cstdlib>
+#include<ctime>
+#include<graphics.h>
+using namespace std;
+
+
+vector<int> find_color(string final, string cur)
+{
+	vector<int> color(5,8);
+	map<char,int> mp;
+	for(int i=0; i<5; i++)
+	{
+		if(mp.find(final[i])==mp.end())
+		mp[final[i]]=1;
+		else
+		mp[final[i]]++;
+	}
+	for(int i=0; i<5; i++)
+	{
+		if(final[i]==cur[i])
+		{
+			color[i]=1;
+			mp[final[i]]--;
+			if(mp[final[i]]==0)
+			mp.erase(mp.find(final[i]));
+		}
+	}
+	for(int i=0; i<5; i++)
+	{
+		if(color[i]!=1 && mp.find(cur[i])!=mp.end())
+		{
+			color[i]=6;
+			mp[cur[i]]--;
+			if(mp[cur[i]]==0)
+			mp.erase(mp.find(cur[i]));
+		}
+	}
+//	for(int i=0; i<5; i++)
+//	cout << color[i] << " ";
+	return color;
+}
+int main()
+{
+//	int gd = DETECT, gm;
+//	initgraph(&gd,&gm,(char*)"");
+	initwindow(1500,800);
+	int hx = getmaxx();
+	int hy = getmaxy();
+//	cout << hx << " " << hy;
+
+	//INTRODUCING
+	setcolor(WHITE);
+	
+	string s = "WELCOME TO WORDLE";
+	char* ptr1 = &s[0];
+	settextstyle(3,0,10);
+	outtextxy(130,130,ptr1);
+	
+	s = "LET'S ";
+	char* ptr2 = &s[0];
+	settextstyle(3,0,10);
+	outtextxy(500,320,ptr2);
+	
+	s = "START THE GAME";
+	char* ptr3 = &s[0];
+	settextstyle(4,0,9);
+	outtextxy(150,480,ptr3);
+	
+		//body border	
+	line(0,0,hx,0);
+	line(0,hy,hx,hy);
+	line(0,0,0,hy);
+	line(hx,0,hx,hy);
+	
+	setfillstyle(SOLID_FILL,9);
+	floodfill(2,2,WHITE);
+	floodfill(460,180,WHITE);  // FIRST O (460,180)
+	floodfill(780,180,WHITE);  // SECOND O (780,180)
+	floodfill(980,180,WHITE);  // THIRD O (980,180)
+	floodfill(1070,180,WHITE); // R (1070,180)
+	floodfill(1130,180,WHITE); // D (1130,180)
+	
+	floodfill(390,520,WHITE);  //FIRST A(390,520)
+	floodfill(470,510,WHITE);  // R (470,510)
+	floodfill(1170,520,WHITE); // A  (1170,520)
+		char temp1;
+		
+	delay(10000);
+
+	cleardevice();
+
+	//Game rule page
+		setfillstyle(6,10);
+	floodfill(3,3,WHITE);
+	settextstyle(4,0,4);
+	string rule = "You are playing with computer. Computer has a word of length 5. ";
+	char* rul = &rule[0];
+	outtextxy(100,100,rul);
+	rule = "It may be meaningful or not but all the characters will be unique. ";
+	 rul = &rule[0];
+	outtextxy(100,140,rul);
+	rule = "If any character matches with computer by respective positions, ";
+	 rul = &rule[0];
+	outtextxy(100,180,rul);
+	rule = "computer will give you a hints by coloring the character blue ";
+	rul = &rule[0];
+	outtextxy(100,220,rul);
+	rule = "and if characters matched but positions are not same ";
+	 rul = &rule[0];
+	outtextxy(100,260,rul);
+	rule = "then color will be yellow.  ";
+	 rul = &rule[0];
+	outtextxy(100,300,rul);
+	rule = "You will earn 10 for each blue color and 5 for yellow.";
+	rul = &rule[0];
+	outtextxy(100,340,rul);
+		settextstyle(4,0,6);
+	rule = "So Best of LUCK  ";
+	 rul = &rule[0];
+	outtextxy(100,400,rul);
+	
+	rule = "Press any key to start the game";
+	rul = &rule[0];
+	outtextxy(100,470,rul);
+	getch();
+	cleardevice();
+	//sqare area
+	
+
+	//creating game area
+
+	
+	//creating the boxes
+	//every box 100*100
+	//start box = 500*100
+	for(int i=0; i<7; i++)
+	{
+		line(500,100+i*100,1125,100+i*100);
+		line(500,101+i*100,1125,101+i*100);
+		line(500,99+i*100,1125,99+i*100);
+	}
+	for(int i=0; i<6; i++)
+	{
+		line(499+i*125,100,499+i*125,700);
+		line(500+i*125,100,500+i*125,700);
+		line(501+i*125,100,501+i*125,700);
+	}
+	
+	setfillstyle(SOLID_FILL,8);
+	int x_pos = 510;
+	int y_pos = 110;
+	floodfill(100,100,WHITE);
+	for(int i=0; i<5; i++)
+	{
+		for(int j=0; j<6; j++)
+		floodfill(x_pos+i*125,y_pos+j*100,WHITE);
+	}
+	
+	// creating a random string
+	string find = "";
+	srand(time(0));
+	int num[5];
+	for(int i=0; i<5; i++)
+	{
+		int flag = 0;
+		do
+		{
+			 num[i] = rand()%26;
+			 flag = 0;
+			for(int j=0; j<i; j++)
+			if(num[i]==num[j])
+			flag = 1;
+		}
+			while(flag == 1);
+		char ch = 'A'+char(num[i]);
+		find = find + ch;
+	}
+
+//	cout << find << "\n";
+	
+	int score = 0;  // score
+	//taking input from user
+	string cur = "";
+	int x=0,y=0;
+	while(x<5 && y<6)
+	{
+		int f=1;
+		char temp = '2';
+		while(temp == '2')
+		{
+			if(f==1)
+			{
+				setcolor(BLUE);
+				f=0;
+			}
+			else
+			{
+				setcolor(8);
+				f=1;
+			}
+			line(530+x*125,190+y*100,595+x*125,190+y*100);
+			line(530+x*125,191+y*100,595+x*125,191+y*100);
+		
+			for(int i=0; i<20000000; i++)
+			{
+					if(kbhit())
+					{
+					 temp = getch();
+					 break;
+					}
+			}
+	//			if(kbhit())
+//			 temp = getch();
+//			 else
+//			 
+//			 	delay(500);
+		}
+		setcolor(WHITE);
+		if(temp>='a' && temp<='z')
+		temp = temp-'a'+'A';
+		else if(temp>='A' || temp<='Z')
+		continue;
+		cur = cur + temp;
+		string ch(1,temp);
+		char* ptr = &ch[0];
+		settextstyle(4,0,7);
+		outtextxy(510+x*125,110+y*100,ptr);
+		{
+		floodfill(510+x*125,110+y*100,WHITE);
+		floodfill(550+x*125,150+y*100,WHITE);
+		floodfill(540+x*125,130+y*100,WHITE);
+		}
+		x++;
+		if(x == 5)
+		{
+			// color -->  1 for blue
+			// color -->  6 for yellow
+		//	cout << cur << "\n";
+			vector<int> color = find_color(find,cur);
+//			for(int i=0; i<5; i++)
+//			cout << " "<< color[i] ;
+		//	cout << "\n";
+			int count = 0;		// counting the number of blue color
+			for(int i=0; i<5; i++)
+			{
+				if(color[i]==1)
+				{
+					score+=10;
+					count++;
+				}
+				else if(color[i]==6)
+				score+=5;	
+				setfillstyle(SOLID_FILL,color[i]);
+				floodfill(510+i*125,110+y*100,WHITE);
+				floodfill(550+i*125,150+y*100,WHITE);
+				floodfill(540+i*125,130+y*100,WHITE);
+			}
+			if(count==5)
+			{
+				score = score+(5-y)*50;
+				break;
+			}
+			x=0;
+			y++;
+			cur = "";
+			setfillstyle(SOLID_FILL,8);
+		}
+	}
+	
+	delay(200);
+	string rest = "The correct word is "+find;
+	char* ans = &rest[0];
+	outtextxy(200,400,ans);
+
+//      //final page
+
+//	cout << "\nscore is " << score;
+	delay(10000);
+	cleardevice();
+	string res = "";
+	while(score>0)
+	{
+		char ch= (char)(48+score%10);
+		res = ch+res;
+		score = score/10;
+	}
+	 res = "YOUR SCORE IS " + res;
+	 string first = "WELL PLAYED!";
+	 string last = "BETTER LUCK NEXT TIME";
+	char* pt2 = &res[0];
+	char* pt1 = &first[0];
+	char* pt3 = &last[0];
+
+	settextstyle(4,0,8);
+	outtextxy(200,100,pt1);
+	outtextxy(150,300,pt2);
+	settextstyle(4,0,7);
+	outtextxy(100,500,pt3);
+	
+		setfillstyle(SOLID_FILL,9);
+		floodfill(2,2,WHITE);
+		
+		floodfill(600,130,WHITE); 			 // p  of played
+		floodfill(760,130,WHITE);            // A of played
+		floodfill(1000,130,WHITE);  			//  D of played
+		
+		floodfill(300,330,WHITE);   			// O of your
+		floodfill(450,330,WHITE);   			// R of your
+		floodfill(750,330,WHITE);   			// O of score
+		floodfill(850,330,WHITE);   			//  R of score
+		
+		//    to color score
+		floodfill(1340,330,WHITE);   
+		floodfill(1340,350,WHITE);   
+		floodfill(1270,330,WHITE);   
+		floodfill(1270,350,WHITE); 
+		floodfill(1200,330,WHITE);   
+		floodfill(1200,350,WHITE); 
+		
+//		
+//		putpixel(1340,330,RED);	
+//		putpixel(1340,350,RED);	  
+//		putpixel(1270,330,RED);	
+//		putpixel(1270,350,RED);	
+//		putpixel(1200,330,RED);	
+//		putpixel(1200,350,RED);	
+
+		putpixel(450,520,RED);	
+		putpixel(120,540,RED);
+		floodfill(450,520,WHITE);
+		floodfill(120,520,WHITE);
+		floodfill(120,540,WHITE);
+
+	getch();
+
+}
